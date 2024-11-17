@@ -65,43 +65,51 @@
 
             let currentPositions = {}; // Stores the current positions of nodes for animations
 
+            // Track highlighted nodes with colors
+            let highlightedNodes = {};
+
+            // Highlight a specific node with a given color
+            function highlightNode(node, color) {
+                highlightedNodes[node.element] = color;
+            }
+
+            // Draw the AVL Tree with highlight support
             function drawTree(context, x, y, radius, root, hGap) {
                 if (!root) return;
 
                 const nodeId = root.element;
 
-                // If this is the first time drawing this node, initialize its current position
-                if (!currentPositions[nodeId]) {
-                    currentPositions[nodeId] = { x, y };
-                }
-
-                // Interpolate position for smooth animation
-                const prevX = currentPositions[nodeId].x;
-                const prevY = currentPositions[nodeId].y;
-                const dx = (x - prevX) * 0.2; // Animation speed
+                const prevX = currentPositions[nodeId]?.x ?? x;
+                const prevY = currentPositions[nodeId]?.y ?? y;
+                const dx = (x - prevX) * 0.2;
                 const dy = (y - prevY) * 0.2;
-                currentPositions[nodeId].x += dx;
-                currentPositions[nodeId].y += dy;
+                const drawX = prevX + dx;
+                const drawY = prevY + dy;
 
-                const drawX = currentPositions[nodeId].x;
-                const drawY = currentPositions[nodeId].y;
+                currentPositions[nodeId] = { x: drawX, y: drawY };
 
-                // Draw the node
+                // Choose color based on whether node is highlighted
+                const nodeColor =
+                    highlightedNodes[nodeId] === "red" ? "red" : "#3498db";
+                const borderColor =
+                    highlightedNodes[nodeId] === "red" ? "darkred" : "#2980b9";
+
+                // Draw node
                 context.beginPath();
                 context.arc(drawX, drawY, radius, 0, 2 * Math.PI, false);
-                context.fillStyle = "#3498db";
+                context.fillStyle = nodeColor;
                 context.fill();
                 context.lineWidth = 2;
-                context.strokeStyle = "#2980b9";
+                context.strokeStyle = borderColor;
                 context.stroke();
 
-                // Draw the node value
+                // Draw node value
                 context.fillStyle = "white";
                 context.textAlign = "center";
                 context.textBaseline = "middle";
                 context.fillText(root.element, drawX, drawY);
 
-                // Connect left child
+                // Recursively draw left and right children with connecting lines
                 if (root.left != null) {
                     connectTwoCircles(
                         context,
@@ -120,8 +128,6 @@
                         hGap / 2
                     );
                 }
-
-                // Connect right child
                 if (root.right != null) {
                     connectTwoCircles(
                         context,

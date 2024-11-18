@@ -64,22 +64,6 @@
                 margin: 20px 0;
             }
 
-            .canvas-container {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                border: 1px solid #eb0d1b;
-                width: 100%;
-                max-width: 800px;
-                height: 400px;
-                background-color: #fff;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            }
-
-            canvas {
-                display: block;
-            }
-
             .controls {
                 margin-top: 20px;
                 text-align: center;
@@ -385,6 +369,40 @@
                 // Reset highlights after a short delay
                 setTimeout(resetHighlights, 2000);
             }
+
+            // Generate a random tree based on input size
+            function generateRandomTree() {
+                const countInput = document
+                    .getElementById("randomCount")
+                    .value.trim();
+                if (countInput === "" || isNaN(countInput)) {
+                    alert("Please enter a valid number of nodes.");
+                    return;
+                }
+
+                const nodeCount = parseInt(countInput);
+                if (nodeCount <= 0) {
+                    alert("Please enter a positive number.");
+                    return;
+                }
+
+                // Clear the existing tree
+                tree = new AVLTree();
+
+                const maxRandom = 1000; // Max range for random integers
+                const addedValues = new Set();
+
+                while (addedValues.size < nodeCount) {
+                    const randomValue = Math.floor(Math.random() * maxRandom);
+                    if (!addedValues.has(randomValue)) {
+                        tree.insert(randomValue);
+                        addedValues.add(randomValue);
+                    }
+                }
+
+                draw(); // Redraw the tree
+                alert(`${nodeCount} random nodes generated.`);
+            }
         </script>
 
         <!-- Global Site Tag (gtag.js) - Google Analytics -->
@@ -406,10 +424,16 @@
 
     <body onload="draw()" onresize="draw()">
         <p>
-            Usage: Enter an integer key and click the Search button to search
+            <!-- Usage: Enter an integer key and click the Search button to search
             the key in the tree. Click the Insert button to insert the key into
             the tree. Click the Remove button to remove the key from the tree.
-            For the best display, use integers between 0 and 99.
+            For the best display, use integers between 0 and 99. -->
+            Usage: Enter an integer key and click the Search button to search
+            the key in the tree. CLick on the Insert button to insert the key
+            into the tree. Click the Remove button to remove the key from the
+            tree. You can also input a number of nodes you would like for a
+            random tree and click on the Generate Random Tree button. (Note: The
+            elements generated from this method range from 0 - 1000)
         </p>
 
         <div class="canvas-container">
@@ -422,6 +446,15 @@
                 <button type="button" onclick="search()">Search</button>
                 <button type="button" onclick="insert()">Insert</button>
                 <button type="button" onclick="remove1()">Remove</button>
+            </span>
+        </div>
+        <div class="controls">
+            <span>
+                Enter number of nodes:
+                <input type="text" value="" id="randomCount" />
+                <button type="button" onclick="generateRandomTree()">
+                    Generate Random Tree
+                </button>
             </span>
         </div>
     </body>

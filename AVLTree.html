@@ -1,14 +1,41 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>AVL Tree Animation by Y. Daniel Liang</title>
+        <title>AVL Tree Animation by Isaac Lockwood</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="stylesheet" type="text/css" href="boxes.css" />
-
-        <!--        <script src="jqueryForJPrompt.js" type="text/javascript"></script>-->
         <script src="jquery-1.7.2.min.js"></script>
         <script src="jquery-ui.min.js"></script>
         <script src="jquery.ui.touch-punch.min.js"></script>
+        <script src="jquery.alerts.js" type="text/javascript"></script>
+        <!-- Dependencies -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js"
+            type="text/javascript"
+        ></script>
+        <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            type="text/javascript"
+        ></script>
+        <script
+            src="http://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.js"
+            type="text/javascript"
+        ></script>
+
+        <link
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+            rel="stylesheet"
+            type="text/css"
+            media="screen"
+        />
+        <link
+            href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+            rel="stylesheet"
+            type="text/css"
+            media="screen"
+        />
+        <!-- Core files -->
+
         <script src="jquery.alerts.js" type="text/javascript"></script>
         <link
             href="jquery.alerts.css"
@@ -19,6 +46,78 @@
 
         <script src="BST.js"></script>
         <script src="AVLTree.js"></script>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                background-color: #f9f9f9;
+            }
+
+            p {
+                text-align: center;
+                margin: 20px 0;
+            }
+
+            .canvas-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border: 1px solid #eb0d1b;
+                width: 100%;
+                max-width: 800px;
+                height: 400px;
+                background-color: #fff;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            canvas {
+                display: block;
+            }
+
+            .controls {
+                margin-top: 20px;
+                text-align: center;
+            }
+
+            .controls span {
+                display: inline-block;
+                border: 1px solid #37826c;
+                padding: 10px;
+                background-color: #e8f6f3;
+                border-radius: 5px;
+            }
+
+            .controls input {
+                width: 3em;
+                text-align: right;
+                margin-left: 10px;
+                margin-right: 10px;
+                padding: 3px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+            }
+
+            .controls button {
+                margin: 0 5px;
+                padding: 5px 10px;
+                border: none;
+                border-radius: 3px;
+                background-color: #37826c;
+                color: white;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+            .controls button:hover {
+                background-color: #2c6d58;
+            }
+        </style>
         <script>
             tree = new AVLTree();
             tree.insert(50);
@@ -269,34 +368,16 @@
             For the best display, use integers between 0 and 99.
         </p>
 
-        <div
-            style="
-                margin: 0px auto;
-                border: 1px solid #eb0d1b;
-                text-align: right;
-                height: 260px;
-            "
-        >
+        <div class="canvas-container">
             <canvas id="canvas"></canvas>
         </div>
-        <div style="text-align: center; margin-top: 1em">
-            <span style="border: 1px solid #37826c; padding: 3px">
+        <div class="controls">
+            <span>
                 Enter a key:
-                <input
-                    type="text"
-                    value=""
-                    id="value"
-                    style="width: 3em; text-align: right"
-                />
-                <button type="button" class="button" onclick="search()">
-                    Search
-                </button>
-                <button type="button" class="button" onclick="insert()">
-                    Insert
-                </button>
-                <button type="button" class="button" onclick="remove1()">
-                    Remove
-                </button>
+                <input type="text" value="" id="value" />
+                <button type="button" onclick="search()">Search</button>
+                <button type="button" onclick="insert()">Insert</button>
+                <button type="button" onclick="remove1()">Remove</button>
             </span>
         </div>
     </body>

@@ -278,6 +278,30 @@
                 heap.delete(parseInt(index));
                 draw();
             }
+
+            function generateRandomHeap() {
+                const numElements = document
+                    .getElementById("numElements")
+                    .value.trim();
+                if (
+                    numElements === "" ||
+                    isNaN(numElements) ||
+                    parseInt(numElements) <= 0
+                ) {
+                    alert("Invalid number of elements entered");
+                    return;
+                }
+
+                const n = parseInt(numElements);
+                heap.list = []; // Clear the existing heap
+
+                for (let i = 0; i < n; i++) {
+                    const randomValue = Math.floor(Math.random() * 100) + 1; // Generate random number between 1 and 100
+                    heap.add(randomValue);
+                }
+
+                draw();
+            }
         </script>
     </head>
 
@@ -309,6 +333,13 @@
                 Enter an index to delete:
                 <input type="text" value="" id="deleteIndex" />
                 <button type="button" onclick="deleteAtIndex()">Delete</button>
+            </span>
+            <span>
+                Enter number of elements for random heap:
+                <input type="text" value="" id="numElements" />
+                <button type="button" onclick="generateRandomHeap()">
+                    Generate Random Heap
+                </button>
             </span>
             <button type="button" onclick="remove1()">Remove the root</button>
         </div>

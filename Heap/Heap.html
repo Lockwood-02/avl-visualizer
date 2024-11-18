@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Heap Animation by Isaac Lockwood</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <script src="jquery-1.7.2.min.js"></script>
+        <script src="jquery-ui.min.js"></script>
+        <script src="jquery.ui.touch-punch.min.js"></script>
+        <script src="jquery.alerts.js"></script>
+        <link href="jquery.alerts.css" rel="stylesheet" type="text/css" />
+        <script src="Heap.js"></script>
+
+        <style>
+            /* General Body Styling */
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f9f9f9;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+            }
+
+            /* Heading */
+            h3 {
+                text-align: center;
+                font-size: 1.5em;
+                margin: 20px 0;
+                font-weight: bold;
+            }
+
+            h3 a {
+                color: #37826c;
+                text-decoration: none;
+            }
+
+            h3 a:hover {
+                text-decoration: underline;
+            }
+
+            /* Instructions Paragraph */
+            p {
+                text-align: center;
+                margin: 20px 0;
+            }
+
+            /* Canvas Container */
+            .canvas-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border: 1px solid #eb0d1b;
+                background-color: #fff;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                width: 100%;
+                max-width: 800px;
+                height: 400px;
+                margin-bottom: 20px;
+            }
+
+            canvas {
+                display: block;
+            }
+
+            /* Controls Section */
+            .controls {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+                margin-top: 20px;
+            }
+
+            .controls span {
+                display: inline-block;
+                border: 1px solid #37826c;
+                padding: 10px;
+                background-color: #e8f6f3;
+                border-radius: 5px;
+            }
+
+            .controls input {
+                width: 3em;
+                text-align: right;
+                margin-left: 10px;
+                padding: 3px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+            }
+
+            .controls button {
+                margin: 0 5px;
+                padding: 5px 10px;
+                border: none;
+                border-radius: 3px;
+                background-color: #37826c;
+                color: white;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+            .controls button:hover {
+                background-color: #2c6d58;
+            }
+        </style>
+
+        <script>
+            // Add your heap implementation and drawing logic here
+            heap = new Heap();
+            vGap = 40;
+            radius = 20;
+
+            function draw() {
+                const canvas = document.getElementById("canvas");
+                const context = canvas.getContext("2d");
+
+                canvas.width = window.innerWidth - 20;
+                canvas.height = 400;
+                context.clearRect(0, 0, canvas.width, canvas.height);
+
+                context.font = "14px sans-serif";
+                context.strokeStyle = "#100";
+
+                if (heap.isEmpty()) {
+                    context.fillText(
+                        "Heap is empty",
+                        canvas.width / 2 - 50,
+                        15
+                    );
+                } else {
+                    const x = canvas.width / 2;
+                    const y = 30;
+                    drawTree(context, x, y, radius, 0, canvas.width / 4);
+                }
+
+                context.stroke();
+            }
+
+            function drawTree(context, x, y, radius, i, hGap) {
+                if (i >= heap.list.length) return; // Exit if index is out of bounds
+
+                // Draw the left child connection line
+                if (2 * i + 1 < heap.list.length) {
+                    connectTwoCircles(context, x, y, x - hGap, y + vGap);
+                    drawTree(
+                        context,
+                        x - hGap,
+                        y + vGap,
+                        radius,
+                        2 * i + 1,
+                        hGap / 2
+                    );
+                }
+
+                // Draw the right child connection line
+                if (2 * i + 2 < heap.list.length) {
+                    connectTwoCircles(context, x, y, x + hGap, y + vGap);
+                    drawTree(
+                        context,
+                        x + hGap,
+                        y + vGap,
+                        radius,
+                        2 * i + 2,
+                        hGap / 2
+                    );
+                }
+
+                // Draw the current node
+                context.beginPath();
+                context.arc(x, y, radius, 0, Math.PI * 2, false);
+                context.fillStyle = "#3498db"; // Node fill color
+                context.fill();
+                context.lineWidth = 2;
+                context.strokeStyle = "#2980b9"; // Node border color
+                context.stroke();
+
+                // Draw the node value
+                context.fillStyle = "white"; // Text color
+                context.textAlign = "center";
+                context.textBaseline = "middle";
+                context.fillText(heap.list[i] + "", x, y);
+            }
+
+            function connectTwoCircles(context, x1, y1, x2, y2) {
+                const d = Math.sqrt(vGap * vGap + (x2 - x1) * (x2 - x1)); // Distance between circles
+                const x11 = x1 - (radius * (x1 - x2)) / d;
+                const y11 = y1 - (radius * (y1 - y2)) / d;
+                const x21 = x2 + (radius * (x1 - x2)) / d;
+                const y21 = y2 + (radius * (y1 - y2)) / d;
+
+                context.beginPath();
+                context.moveTo(x11, y11);
+                context.lineTo(x21, y21);
+                context.lineWidth = 2;
+                context.strokeStyle = "#2c3e50"; // Line color
+                context.stroke();
+            }
+
+            function insert() {
+                const value = document.getElementById("value").value.trim();
+                if (value === "") {
+                    alert("No value entered");
+                    return;
+                }
+                heap.add(parseInt(value));
+                draw();
+            }
+
+            function remove1() {
+                if (heap.isEmpty()) {
+                    alert("The heap is empty");
+                } else {
+                    heap.remove();
+                    draw();
+                }
+            }
+        </script>
+    </head>
+
+    <body onload="draw()" onresize="draw()">
+        <p>
+            Usage: Enter an integer key and click the Insert button to insert
+            the key into the heap. Click the Remove the root button to remove
+            the root from the heap.
+        </p>
+
+        <div class="canvas-container">
+            <canvas id="canvas"></canvas>
+        </div>
+        <div class="controls">
+            <span>
+                Enter a key:
+                <input type="text" value="" id="value" />
+                <button type="button" onclick="insert()">Insert</button>
+            </span>
+            <button type="button" onclick="remove1()">Remove the root</button>
+        </div>
+    </body>
+</html>

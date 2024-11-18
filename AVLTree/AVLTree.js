@@ -1,3 +1,9 @@
+/*
+    A lot of credit to Yong Daniel Liang who provided the code for the algorithms for
+    the basic insert and delete functions. All other implementations were creaeted 
+    by me in a collaborative effort with ChatGPT
+*/
+
 // Constructor for AVLTree
 function AVLTree() {
     //  alert("AVLTree called");

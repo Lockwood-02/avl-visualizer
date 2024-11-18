@@ -1,6 +1,6 @@
 // Constructor for AVLTree
 function AVLTree() {
-    //  jAlert("AVLTree called");
+    //  alert("AVLTree called");
     BST.call(this);
 }
 
@@ -18,14 +18,14 @@ function AVLTreeNode(e) {
 
 // Override the createNewNode method
 AVLTree.prototype.createNewNode = function (e) {
-    //  jAlert("AVLTree createNewNode");
+    //  alert("AVLTree createNewNode");
     return new AVLTreeNode(e);
 };
 
 // Insert a new element e
 AVLTree.prototype.insert = function (e) {
     var successful = BST.prototype.insert.call(this, e);
-    //  jAlert("After insert, AVLTree size is " + this.size);
+    //  alert("After insert, AVLTree size is " + this.size);
     if (!successful) return false; // e is already in the tree
     else {
         this.balancePath(e); // Balance from e to the root if necessary

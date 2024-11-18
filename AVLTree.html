@@ -168,9 +168,9 @@
             let highlightedNodes = {};
 
             // Highlight a specific node with a given color
-            function highlightNode(node, color) {
+            window.highlightNode = function (node, color) {
                 highlightedNodes[node.element] = color;
-            }
+            };
 
             // Draw the AVL Tree with highlight support
             function drawTree(context, x, y, radius, root, hGap) {
@@ -189,9 +189,22 @@
 
                 // Choose color based on whether node is highlighted
                 const nodeColor =
-                    highlightedNodes[nodeId] === "red" ? "red" : "#3498db";
+                    highlightedNodes[nodeId] === "red"
+                        ? "red"
+                        : highlightedNodes[nodeId] === "green"
+                        ? "green"
+                        : highlightedNodes[nodeId] === "yellow"
+                        ? "yellow"
+                        : "#3498db"; // Default node color
+
                 const borderColor =
-                    highlightedNodes[nodeId] === "red" ? "darkred" : "#2980b9";
+                    highlightedNodes[nodeId] === "red"
+                        ? "darkred"
+                        : highlightedNodes[nodeId] === "green"
+                        ? "darkgreen"
+                        : highlightedNodes[nodeId] === "yellow"
+                        ? "goldenrod"
+                        : "#2980b9"; // Default border color
 
                 // Draw node
                 context.beginPath();
@@ -267,16 +280,16 @@
 
             function remove1() {
                 if (tree.isEmpty()) {
-                    jAlert("The tree is empty");
+                    alert("The tree is empty");
                 } else {
                     var value = document.getElementById("value").value.trim();
                     if (value == "") {
-                        jAlert("no key entered");
+                        alert("no key entered");
                     } else if (tree.search(parseInt(value))) {
                         tree.remove(parseInt(value));
                         draw();
                     } else {
-                        jAlert("key " + value + " is not in the tree");
+                        alert("key " + value + " is not in the tree");
                     }
                 }
             }
@@ -284,9 +297,9 @@
             function insert() {
                 var value = document.getElementById("value").value.trim();
                 if (value == "") {
-                    jAlert("no key entered");
+                    alert("no key entered");
                 } else if (tree.search(parseInt(value))) {
-                    jAlert("key " + value + " is already in the tree");
+                    alert("key " + value + " is already in the tree");
                 } else {
                     tree.insert(parseInt(value));
                     draw();
@@ -329,17 +342,48 @@
                 );
             }
 
-            function search() {
-                var value = document.getElementById("value").value.trim();
-                if (value == "") {
-                    jAlert("no key entered");
-                } else {
-                    if (tree.search(parseInt(value))) {
-                        jAlert(value + " is in the tree");
-                    } else {
-                        jAlert(value + " is not in the tree");
-                    }
+            // Helper function to reset node highlights after search
+            function resetHighlights() {
+                highlightedNodes = {}; // Clear all highlights
+                draw(); // Redraw the tree
+            }
+
+            // Update the search function with visual highlights
+            async function search() {
+                const value = document.getElementById("value").value.trim();
+                if (value === "") {
+                    alert("No key entered.");
+                    return;
                 }
+
+                const intValue = parseInt(value);
+                const path = tree.path(intValue);
+
+                if (path.length === 0) {
+                    alert(`${value} is not in the tree.`);
+                    return;
+                }
+
+                // Traverse the path and highlight each node
+                for (let i = 0; i < path.length; i++) {
+                    const currentNode = path[i];
+                    highlightNode(currentNode, "yellow"); // Temporarily highlight path
+                    draw();
+                    await sleep(500); // Delay to visualize traversal
+                }
+
+                const foundNode = path[path.length - 1];
+                if (foundNode && foundNode.element === intValue) {
+                    highlightNode(foundNode, "green"); // Highlight the found node
+                    draw();
+                    await sleep(1000);
+                    alert(`${value} is in the tree.`);
+                } else {
+                    alert(`${value} is not in the tree.`);
+                }
+
+                // Reset highlights after a short delay
+                setTimeout(resetHighlights, 2000);
             }
         </script>
 

@@ -75,7 +75,7 @@ AVLTree.prototype.balancePath = async function (e) {
             // Highlight the imbalanced node
             highlightNode(A, "red");
             draw(); // Redraw to apply highlight
-            await sleep(1000); // Delay for 1 second to show red highlight
+            await sleep(500); // Delay for 1 second to show red highlight
 
             // Perform rotation after delay
             if (this.balanceFactor(A) === -2) {

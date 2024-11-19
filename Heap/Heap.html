@@ -126,12 +126,12 @@
             vGap = 40;
             radius = 20;
 
-            function draw() {
-                drawHeap();
-                drawArrayRepresentation();
+            function draw(highlightedNodes = {}) {
+                drawHeap(highlightedNodes);
+                drawArrayRepresentation(highlightedNodes);
             }
 
-            function drawHeap() {
+            function drawHeap(highlightedNodes = {}) {
                 const canvas = document.getElementById("canvas");
                 const context = canvas.getContext("2d");
 
@@ -151,13 +151,21 @@
                 } else {
                     const x = canvas.width / 2;
                     const y = 30;
-                    drawTree(context, x, y, radius, 0, canvas.width / 4);
+                    drawTree(
+                        context,
+                        x,
+                        y,
+                        radius,
+                        0,
+                        canvas.width / 4,
+                        highlightedNodes
+                    );
                 }
 
                 context.stroke();
             }
 
-            function drawArrayRepresentation() {
+            function drawArrayRepresentation(highlightedNodes = {}) {
                 const arrayContainer =
                     document.getElementById("array-container");
                 arrayContainer.innerHTML = ""; // Clear the container
@@ -171,6 +179,15 @@
                     element.className = "array-element";
                     element.innerText = heap.list[i];
 
+                    // Highlight based on type
+                    if (highlightedNodes[i] === "new") {
+                        element.style.backgroundColor = "#2ecc71"; // Highlight in green
+                    } else if (highlightedNodes[i] === "root") {
+                        element.style.backgroundColor = "#e74c3c"; // Highlight in red
+                    } else {
+                        element.style.backgroundColor = "#e8f6f3"; // Default color
+                    }
+
                     const index = document.createElement("div");
                     index.className = "array-index";
                     index.innerText = i;
@@ -182,7 +199,15 @@
                 arrayContainer.appendChild(arrayRow);
             }
 
-            function drawTree(context, x, y, radius, i, hGap) {
+            function drawTree(
+                context,
+                x,
+                y,
+                radius,
+                i,
+                hGap,
+                highlightedNodes = {}
+            ) {
                 if (i >= heap.list.length) return; // Exit if index is out of bounds
 
                 // Draw the left child connection line
@@ -194,7 +219,8 @@
                         y + vGap,
                         radius,
                         2 * i + 1,
-                        hGap / 2
+                        hGap / 2,
+                        highlightedNodes
                     );
                 }
 
@@ -207,14 +233,24 @@
                         y + vGap,
                         radius,
                         2 * i + 2,
-                        hGap / 2
+                        hGap / 2,
+                        highlightedNodes
                     );
                 }
 
-                // Draw the current node
+                // Draw the current node with highlighting if applicable
                 context.beginPath();
                 context.arc(x, y, radius, 0, Math.PI * 2, false);
-                context.fillStyle = "#3498db"; // Node fill color
+
+                // Determine fill color based on highlighting
+                if (highlightedNodes[i] === "new") {
+                    context.fillStyle = "#2ecc71"; // Newly added node (highlighted in green)
+                } else if (highlightedNodes[i] === "root") {
+                    context.fillStyle = "#e74c3c"; // Current root node (highlighted in red)
+                } else {
+                    context.fillStyle = "#3498db"; // Default node fill color
+                }
+
                 context.fill();
                 context.lineWidth = 2;
                 context.strokeStyle = "#2980b9"; // Node border color
@@ -248,8 +284,18 @@
                     alert("No value entered");
                     return;
                 }
-                heap.add(parseInt(value));
-                draw();
+
+                const newValue = parseInt(value);
+                heap.add(newValue);
+
+                // Highlight the new node and root before heapify
+                draw({ [heap.list.length - 1]: "new", 0: "root" });
+
+                // Delay for highlighting
+                setTimeout(() => {
+                    // Perform heapify and redraw
+                    draw();
+                }, 1000);
             }
 
             function remove1() {
